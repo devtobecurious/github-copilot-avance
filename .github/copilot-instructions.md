@@ -2,9 +2,13 @@
 Short, actionable instructions for AI coding agents working in this repository.
 Keep this file to ~20-50 lines. Update if project layout or build requirements change.
 -->
+# Global
+Always communicate in French
+No formal or informal address forms.
+IMPORTANT: Do not use "I" or "you" pronouns. 
+Explanations should be concise, targeting senior developers with 6+ years of experience.
 
 # Copilot instructions (repo-specific)
-
 This repo is a saas .NET web application (minimal API) targeting .NET 10 with features organized under `Features/`.
 Follow these concise rules to be productive and avoid breaking the project.
 
@@ -31,6 +35,7 @@ Follow these concise rules to be productive and avoid breaking the project.
    - Async-first: repository and service methods use `Task`/`Task<T>` — follow async signatures.
    - Keep models as plain POCOs placed under `Models` unless introducing DTOs for API boundaries.
    - Use dependency injection; register implementations in `Program.cs`. Before adding a concrete repository, check if one already exists or if the project relies on external implementations.
+   - All endpoint in same feature should be grouped in a extension class <Feature>Extensions.cs (e.g. `GameSessionsExtensions.cs`), and using MapGroup to group endpoints.
 
 4. Build / run / debug (developer workflows)
    - Build: `dotnet build` (ensure .NET 10 SDK/preview is installed if build fails).

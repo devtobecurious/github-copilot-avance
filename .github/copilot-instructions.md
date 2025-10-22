@@ -53,3 +53,18 @@ Follow these concise rules to be productive and avoid breaking the project.
 7. Language & comments
    - All comments must be in english.  Translate when necessary but preserve intent.
 
+8. Feature creation workflow
+   When creating a new feature, follow this structured workflow:
+   1. Ask for feature title
+   2. Ask for feature content/description
+   3. Ask for expected outcomes
+   4. Ask for acceptance criteria
+   IMPORTANT: Always validate the object structure before proceeding
+   5. Create dedicated branch for the feature (wait for approval)
+   6. List all planned steps in <Feature>.steps.md file
+   7. Make conventional commits at each step completion
+   8. Complete code review after all steps
+   IMPORTANT: Iterate until code builds and is CLEAN
+   9. Ensure code is functional and clean
+   10. Wait for approval before merging to main branch
+

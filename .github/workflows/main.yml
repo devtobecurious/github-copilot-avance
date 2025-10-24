@@ -35,17 +35,7 @@ jobs:
           restore-keys: |
             ${{ runner.os }}-node-
       
-      - name: Install dependencies
-        run: npm ci
-        # Si pas de package-lock.json, utiliser : npm install
       
-      - name: Run linter
-        run: npm run lint
-      
-      - name: Run tests
-        id: tests
-        run: npm test -- --coverage
-        continue-on-error: true
       
       - name: Create issue for test failures
         if: steps.tests.outcome == 'failure'

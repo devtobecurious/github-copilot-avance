@@ -1,0 +1,48 @@
+Prompt CoT
+
+Step 1: Validate Prerequisites
+- Check cart items availability in inventory
+- Verify user authentication and address
+- Validate payment method
+
+Step 2: Calculate Totals
+- Sum cart items
+- Apply discounts/promo codes
+- Calculate taxes based on shipping address
+- Add shipping costs
+
+Step 3: Process Payment
+- Create payment intent with Stripe
+- Handle 3D Secure if required
+- Wait for payment confirmation
+
+Step 4: If Payment Succeeds
+- Reduce inventory atomically
+- Create order record in database
+- Generate order confirmation number
+- Send confirmation email asynchronously
+- Trigger webhook for order created event
+
+Step 5: If Any Step Fails
+- Rollback previous operations (compensation logic)
+- Refund payment if already charged
+- Restore inventory if reduced
+- Log detailed failure reason with context
+- Return appropriate error to user
+
+Implementation requirements:
+- Use Saga pattern for orchestration
+- Implement idempotency (use request ID)
+- Add compensation logic for each step
+- Use database transactions where possible
+- Handle race conditions (optimistic locking)
+- Include comprehensive error handling
+- Add distributed tracing (OpenTelemetry)
+
+Generate complete implementation with:
+- Main orchestrator class
+- Individual step handlers
+- Compensation functions
+- Error types and handling
+- Unit tests with mocked dependencies
+- Integration test scenario

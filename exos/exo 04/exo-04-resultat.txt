@@ -1,0 +1,20 @@
+Create a TypeScript async function `fetchUsers` that:
+
+Requirements:
+- Accepts filters: { name?: string, role?: UserRole, isActive?: boolean }
+- Returns: Promise<PaginatedResponse<User>>
+- Implements cursor-based pagination (cursor: string, limit: number)
+- Uses Prisma ORM with proper type safety
+- Handles errors with custom UserNotFoundError class
+- Includes proper logging with context
+- Validates input parameters with Zod
+
+Additional:
+- Add JSDoc documentation with usage example
+- Generate unit tests with Jest (mock Prisma client)
+- Test edge cases: empty filters, invalid cursor, database errors
+
+Code style:
+- Use async/await (no .then())
+- Maximum function length: 30 lines
+- Extract helper functions if needed

@@ -1,0 +1,173 @@
+# Project Context
+TypeScript REST API for task management SaaS platform.
+Serverless architecture on AWS Lambda with API Gateway.
+Multi-tenant application with team collaboration features.
+
+# Tech Stack
+- Runtime: Node.js 20, TypeScript 5.3
+- Framework: Express 4.18
+- Database: MongoDB 7.0 with Mongoose ODM
+- Authentication: JWT with Auth0
+- Deployment: AWS Lambda + API Gateway
+- Monitoring: CloudWatch + DataDog
+- Queue: AWS SQS for async jobs
+
+# Coding Standards
+
+## Naming Conventions
+1. **API Routes**: kebab-case
+   - ✅ `/api/task-lists`, `/api/user-profile`
+   - ❌ `/api/taskLists`, `/api/UserProfile`
+
+2. **TypeScript Interfaces**: Prefix with 'I'
+   - ✅ `IUser`, `ITaskDocument`, `IRepository`
+   - ❌ `User`, `TaskDoc`, `Repository`
+
+3. **MongoDB Models**: PascalCase
+   - ✅ `Task`, `UserProfile`, `TeamMember`
+   - ❌ `task`, `user_profile`
+
+## Architecture Patterns (MANDATORY)
+
+### 1. Controller-Service-Repository Pattern
+```
+controllers/     → HTTP layer only (req/res handling)
+services/        → Business logic
+repositories/    → Data access abstraction
+````
+
+Example:
+````typescript
+// controllers/task.controller.ts
+export class TaskController {
+  constructor(private taskService: TaskService) {}
+  
+  async createTask(req: Request, res: Response) {
+    const task = await this.taskService.create(req.body);
+    res.status(201).json(task);
+  }
+}
+
+// services/task.service.ts
+export class TaskService {
+  constructor(private taskRepo: TaskRepository) {}
+  
+  async create(data: CreateTaskDto): Promise<Task> {
+    // Business logic here
+  }
+}
+
+// repositories/task.repository.ts
+export class TaskRepository {
+  async save(task: Task): Promise<Task> {
+    // MongoDB operations
+  }
+}
+````
+
+### 2. Dependency Injection with Factory Pattern
+````typescript
+// di/container.ts
+export class DIContainer {
+  private static services = new Map();
+  
+  static register<T>(key: string, factory: () => T) {
+    this.services.set(key, factory);
+  }
+  
+  static resolve<T>(key: string): T {
+    const factory = this.services.get(key);
+    return factory();
+  }
+}
+````
+
+# Security Requirements (CRITICAL)
+
+## 1. Authentication & Authorization
+- ALL routes except `/health` and `/api/auth/*` MUST verify JWT token
+- Implement middleware: `authenticate` and `authorize`
+- Token expiry: 15 minutes (access), 7 days (refresh)
+- Check user permissions before any database operation
+
+Example:
+````typescript
+router.post('/api/tasks',
+  authenticate,
+  authorize(['create:task']),
+  taskController.createTask
+);
+````
+
+## 2. Input Validation & Sanitization
+- Use Zod for ALL request body/query validation
+- Sanitize HTML input to prevent XSS
+- Validate file uploads (type, size, content)
+- Implement rate limiting: 100 requests/minute per IP
+
+Example:
+````typescript
+import { z } from 'zod';
+
+const CreateTaskSchema = z.object({
+  title: z.string().min(1).max(200),
+  description: z.string().max(2000).optional(),
+  priority: z.enum(['low', 'medium', 'high']),
+  dueDate: z.string().datetime().optional()
+});
+
+app.post('/api/tasks', validate(CreateTaskSchema), ...);
+````
+
+# Testing Standards
+- Unit tests: minimum 70% coverage
+- Use Jest + Supertest
+- Mock MongoDB with mongodb-memory-server
+- Mock Auth0 with jest.mock()
+- Integration tests for all endpoints
+- Test error scenarios and edge cases
+
+Test structure:
+````typescript
+describe('TaskService', () => {
+  describe('createTask', () => {
+    it('should create task with valid data', async () => {
+      // Arrange
+      const taskData = { title: 'Test', priority: 'high' };
+      
+      // Act
+      const result = await taskService.createTask(taskData);
+      
+      // Assert
+      expect(result).toHaveProperty('id');
+      expect(result.title).toBe('Test');
+    });
+    
+    it('should throw error when title is empty', async () => {
+      await expect(
+        taskService.createTask({ title: '' })
+      ).rejects.toThrow('Title is required');
+    });
+  });
+});
+````
+
+# Error Handling
+- Use custom error classes
+- Standard error response format:
+````typescript
+{
+  "error": {
+    "code": "TASK_NOT_FOUND",
+    "message": "Task with ID xxx not found",
+    "statusCode": 404
+  }
+}
+````
+
+# Performance
+- Implement MongoDB indexes on frequently queried fields
+- Use lean() queries when don't need Mongoose documents
+- Implement cursor-based pagination
+- Cache frequently accessed data in Redis (if needed)
+- Monitor Lambda cold starts and optimize bundle size

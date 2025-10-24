@@ -1,0 +1,62 @@
+name: CI/CD with Copilot
+
+on:
+  push:
+    branches: [main, develop]
+  pull_request:
+    branches: [main]
+
+jobs:
+  # Job 1: Lint & Format
+  lint:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+          cache: 'npm'
+      
+      - run: npm ci
+      
+      - name: Run ESLint
+        id: lint
+        run: npm run lint
+        continue-on-error: true
+      
+      # Si le lint échoue, créer une issue pour Copilot Agent
+      - name: Create Copilot Fix Issue
+        if: steps.lint.outcome == 'failure'
+        uses: actions/github-script@v7
+        with:
+          script: |
+            const issue = await github.rest.issues.create({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              title: '🤖 Auto-fix linting issues from workflow run #${{ github.run_number }}',
+              body: `## Linting Errors Detected
+              
+              Workflow run: ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}
+              Branch: ${{ github.ref }}
+              Commit: ${{ github.sha }}
+              
+              @github Please analyze the linting errors and create a PR with fixes.
+              
+              **Instructions:**
+              1. Run \`npm run lint\` to see all errors
+              2. Fix issues following our ESLint config
+              3. Ensure all tests still pass
+              4. Create PR with descriptive commit message
+              
+              **Context:**
+              - Follow .github/copilot-instructions.md
+              - Maintain existing functionality
+              - Add tests if fixing complex issues
+              `,
+              labels: ['automated', 'linting', 'copilot-agent'],
+              assignees: ['github'] // Assigne à Copilot Agent
+            });
+            
+            console.log(`Created issue #${issue.data.number}`);

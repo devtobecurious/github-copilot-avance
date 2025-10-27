@@ -1,0 +1,57 @@
+# Dependabot configuration for automated dependency updates
+# This file enables security updates and version updates for all detected package ecosystems
+# Documentation: https://docs.github.com/en/code-security/dependabot/dependabot-version-updates/configuration-options-for-the-dependabot.yml-file
+
+version: 2
+updates:
+  # .NET NuGet packages
+  - package-ecosystem: "nuget"
+    directory: "/"
+    schedule:
+      interval: "weekly"
+      day: "monday"
+      time: "09:00"
+      timezone: "Europe/Paris"
+    open-pull-requests-limit: 10
+    reviewers:
+      - "devtobecurious"
+    assignees:
+      - "devtobecurious"
+    commit-message:
+      prefix: "deps"
+      prefix-development: "deps-dev"
+      include: "scope"
+    labels:
+      - "dependencies"
+      - "nuget"
+    # Security updates have higher priority
+    allow:
+      - dependency-type: "all"
+    # Ignore dev dependencies for major updates to reduce noise
+    ignore:
+      - dependency-name: "*"
+        update-types: ["version-update:semver-major"]
+        # Except for security updates
+        # Security updates will still be created regardless of ignore rules
+    versioning-strategy: increase
+
+  # GitHub Actions workflows (for future CI/CD pipelines)
+  - package-ecosystem: "github-actions"
+    directory: "/"
+    schedule:
+      interval: "weekly"
+      day: "monday"
+      time: "09:00"
+      timezone: "Europe/Paris"
+    open-pull-requests-limit: 5
+    reviewers:
+      - "devtobecurious"
+    assignees:
+      - "devtobecurious"
+    commit-message:
+      prefix: "ci"
+      include: "scope"
+    labels:
+      - "dependencies"
+      - "github-actions"
+      - "ci/cd"

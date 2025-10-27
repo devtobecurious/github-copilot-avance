@@ -1,0 +1,52 @@
+---
+applies_to:
+  - "services/**"
+  - "packages/api/**"
+---
+
+# Backend Team Guidelines (US - EST Timezone)
+
+## Team Info
+- **Location:** New York, USA (EST/EDT)
+- **Working Hours:** 9:00-18:00 EST
+- **Handoff To:** DevOps team (APAC)
+- **Slack:** #team-backend
+
+## Tech Stack
+- Node.js 20 with TypeScript
+- Express.js + tRPC
+- Prisma ORM (PostgreSQL)
+- Redis for caching
+- Bull for job queues
+
+## API Standards
+- RESTful + tRPC procedures
+- OpenAPI 3.0 documentation
+- Versioning: /api/v{version}/
+- Rate limiting: 1000 req/min
+- Always return consistent error format
+
+## Database
+- Migrations via Prisma Migrate
+- No direct SQL (use Prisma)
+- Indexes on all foreign keys
+- Soft deletes for audit trail
+
+## Testing
+- Unit: 85% coverage minimum
+- Integration: All endpoints
+- Load: Critical paths only
+- Use testcontainers for integration
+
+## Handoff Protocol
+- EOD: Document:
+  - API changes made
+  - Database migrations pending
+  - Infrastructure needs
+  - Issues for DevOps
+- Tag: @devops-team-lead
+
+## Cross-Team Dependencies
+- Provide API contracts to Frontend
+- Coordinate DB changes with DevOps
+- 24h notice for breaking changes

@@ -12,27 +12,33 @@ updates:
       day: "monday"
       time: "09:00"
       timezone: "Europe/Paris"
-    open-pull-requests-limit: 10
+    # Limit number of open Dependabot PRs to reduce noise
+    open-pull-requests-limit: 5
+    # Assign PRs to the octocat-reviewers team
     reviewers:
-      - "devtobecurious"
+      - "octocat-reviewers"
     assignees:
       - "devtobecurious"
     commit-message:
       prefix: "deps"
       prefix-development: "deps-dev"
       include: "scope"
+    # Add security-management label to all PRs + existing labels
     labels:
+      - "security-management"
       - "dependencies"
       - "nuget"
-    # Security updates have higher priority
+    # Allow only production dependencies, ignore dev dependencies
     allow:
-      - dependency-type: "all"
-    # Ignore dev dependencies for major updates to reduce noise
+      - dependency-type: "direct"
+      - dependency-type: "indirect"
+    # Ignore development dependencies completely
     ignore:
       - dependency-name: "*"
+        dependency-type: "development"
+      # Also ignore major version updates for non-security updates
+      - dependency-name: "*"
         update-types: ["version-update:semver-major"]
-        # Except for security updates
-        # Security updates will still be created regardless of ignore rules
     versioning-strategy: increase
 
   # GitHub Actions workflows (for future CI/CD pipelines)
@@ -43,15 +49,19 @@ updates:
       day: "monday"
       time: "09:00"
       timezone: "Europe/Paris"
-    open-pull-requests-limit: 5
+    # Limit number of open GitHub Actions PRs
+    open-pull-requests-limit: 3
+    # Assign PRs to the octocat-reviewers team
     reviewers:
-      - "devtobecurious"
+      - "octocat-reviewers"
     assignees:
       - "devtobecurious"
     commit-message:
       prefix: "ci"
       include: "scope"
+    # Add security-management label to all PRs + existing labels
     labels:
+      - "security-management"
       - "dependencies"
       - "github-actions"
       - "ci/cd"

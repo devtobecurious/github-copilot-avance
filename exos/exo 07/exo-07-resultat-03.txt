@@ -1,0 +1,51 @@
+---
+applies_to:
+  - "infrastructure/**"
+  - ".github/workflows/**"
+  - "k8s/**"
+---
+
+# DevOps Team Guidelines (APAC - JST Timezone)
+
+## Team Info
+- **Location:** Tokyo, Japan (JST)
+- **Working Hours:** 9:00-18:00 JST
+- **Handoff To:** Frontend team (EU)
+- **Slack:** #team-devops
+
+## Infrastructure
+- AWS EKS for Kubernetes
+- Terraform for IaC
+- ArgoCD for GitOps
+- Prometheus + Grafana monitoring
+
+## CI/CD
+- GitHub Actions for all pipelines
+- Automated testing required
+- Security scans (Snyk, Trivy)
+- Zero-downtime deployments
+
+## Deployment Strategy
+- Blue-Green for production
+- Canary for high-risk changes
+- Feature flags for gradual rollout
+- Automated rollback on errors
+
+## Monitoring
+- Prometheus metrics
+- CloudWatch logs
+- Jaeger tracing
+- PagerDuty alerts
+
+## Handoff Protocol
+- EOD: Report:
+  - Deployments completed
+  - Infrastructure changes
+  - Incidents resolved
+  - Capacity planning notes
+- Tag: @frontend-team-lead
+
+## Cross-Team Dependencies
+- Execute DB migrations from Backend
+- Deploy Frontend builds
+- Provide environment configs

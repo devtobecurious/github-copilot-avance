@@ -1,0 +1,72 @@
+✅ CORRECTION EXERCICE 5
+Vulnérabilités identifiées :
+Critical (Bloquant)
+
+SQL Injection (CWE-89) - Lines 13, 24
+
+Description : Concaténation directe de variables utilisateur dans les requêtes SQL
+Impact : Accès complet à la base de données, modification/suppression de données
+Exploit : ?id=1 OR 1=1; DROP TABLE users;--
+
+
+Hardcoded Credentials (CWE-798) - Lines 7-8
+
+Description : Mot de passe root en clair dans le code
+Impact : Compromission totale de la base de données
+Exploit : Lecture du code source = accès DB
+
+
+Missing Authentication (CWE-306) - All endpoints
+
+Description : Aucune vérification d'authentification
+Impact : Accès public à toutes les données utilisateurs
+Exploit : N'importe qui peut lire/modifier les données
+
+
+
+High
+
+Information Disclosure (CWE-209) - Line 16
+
+Description : Messages d'erreur techniques exposés au client
+Impact : Révélation de la structure de la base de données
+Exploit : Provoquer des erreurs pour obtenir des infos
+
+
+Privilege Escalation (CWE-269) - Line 24
+
+Description : Permet à n'importe qui de modifier son rôle
+Impact : Utilisateur normal peut devenir admin
+Exploit : POST /api/user/update { id: 1, role: 'admin' }
+
+
+Missing Input Validation (CWE-20) - All inputs
+
+Description : Aucune validation des entrées utilisateur
+Impact : Injection, corruption de données
+Exploit : Envoyer des données malformées
+
+
+
+Medium
+
+Insufficient Logging (CWE-778) - Everywhere
+
+Description : Pas d'audit trail des opérations
+Impact : Impossible de tracer les attaques
+Exploit : Actions malveillantes non tracées
+
+
+No Rate Limiting (CWE-770) - All endpoints
+
+Description : Aucune limite de requêtes
+Impact : Vulnérable aux attaques DDoS et brute force
+Exploit : Spam de requêtes
+
+
+
+Low
+
+No HTTPS Enforcement - Line 28
+Missing Security Headers - Pas de helmet.js
+No CORS Configuration - Accepte toutes origines par défaut

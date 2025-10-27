@@ -5,6 +5,9 @@ using Microsoft.EntityFrameworkCore;
 
 namespace Data;
 
+/// <summary>
+/// Application database context integrating authentication and existing entities. 
+/// </summary>
 public class ApplicationDbContext : DbContext
 {
     public ApplicationDbContext(DbContextOptions<ApplicationDbContext> options) : base(options)

@@ -1,0 +1,58 @@
+---
+applies_to:
+  - "apps/web/**"
+  - "apps/mobile/**"
+  - "packages/ui/**"
+---
+
+# Frontend Team Guidelines (EU - CET Timezone)
+
+## Team Info
+- **Location:** Paris, France (CET/CEST)
+- **Working Hours:** 9:00-18:00 CET
+- **Handoff To:** Backend team (US)
+- **Slack:** #team-frontend
+
+## Tech Stack
+- React 18 with TypeScript 5.3
+- Next.js 14 (App Router)
+- TailwindCSS + shadcn/ui
+- React Query for data fetching
+- Zustand for global state
+- Playwright for E2E tests
+
+## Coding Standards
+- Functional components only (no class components)
+- Custom hooks for reusable logic
+- Colocate tests with components
+- Accessibility: WCAG AA compliance mandatory
+- Performance: Lighthouse score >= 90
+
+## Component Structure
+```
+ComponentName/
+├── index.ts                    # Barrel export
+├── ComponentName.tsx           # Main component
+├── ComponentName.test.tsx      # Unit tests
+├── ComponentName.stories.tsx   # Storybook
+└── useComponentName.ts         # Custom hook if needed
+```
+
+## API Integration
+- All API calls through `@/lib/api` client
+- Use React Query for caching
+- Handle loading and error states
+- Implement optimistic updates
+
+## Handoff Protocol
+- EOD: Create handoff issue with:
+  - Completed work
+  - Blocked items
+  - Questions for Backend team
+  - PRs ready for review
+- Tag: @backend-team-lead
+
+## Cross-Team Dependencies
+- Wait for API contracts before implementing features
+- Coordinate breaking changes 48h advance notice
+- Use GitHub Issues for async communication
